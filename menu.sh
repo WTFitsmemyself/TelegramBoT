@@ -22,6 +22,7 @@ Claim="This is not a Financial Advise, Trade with the knowledge of Risk manageme
 
 #----------------- Functions -----------------
 
+
 SetAlert()
 {
     read -rp "Please Enter Your Selected Coin That You Want To Set Alert: " AnsAlert
@@ -30,9 +31,75 @@ SetAlert()
 }
 
 
+PublishAnalyzeData()
+{
+    read -rp "Please Enter Coin Name (Bitcoin/BTC): " AnsCoin
+    read -rp "Please Enter Entry Price: " EntryPrice
+    read -rp "Please Enter First Stop Loss: " SL1
+    read -rp "Please Enter Second Stop Loss: " SL2
+    read -rp "Please Enter First Take Profit: " TP1
+    read -rp "Please Enter Second Take Profit: " TP2
+    read -rp "Please Enter Analysis TradingView Link: " AnalysisTradingViewLink
+    read -rp "How much do you see the probability of occurrence of this analysis (1-100): " ProbabilityOfOccurrence
+    read -rp "Do you want to add any comment to this analysis (y/n)?: " AddCommentAns
+}
+
+ConfirmOrEditAnalysis()
+{
+    read -rp "Do you confirm this information or you want to edit it (c/e)?: " ConfirmOrEdit 
+    
+    if [ "$ConfirmOrEdit" == "c" ] || [ "$ConfirmOrEdit" == "C" ] || [ "$ConfirmOrEdit" == "confirm" ] || [ "$ConfirmOrEdit" == "CONFIRM" ]
+    then
+        echo -e "OK your Analysis has been submited"
+    elif [ "$ConfirmOrEdit" == "e" ] || [ "$ConfirmOrEdit" == "E" ] || [ "$ConfirmOrEdit" == "edit" ] || [ "$ConfirmOrEdit" == "EDIT" ]
+    then
+        PublishAnalyze
+    else
+        echo -e "Invalid Option"
+    fi
+    
+}
+
 PublishAnalyze()
 {
-    echo -e "Hi For now"
+    PublishAnalyzeData
+    
+    if [ "$AddCommentAns" == "y" ] || [ "$AddCommentAns" == "Y" ] ||  [ "$AddCommentAns" == "yes" ] ||  [ "$AddCommentAns" == "YES" ] 
+    then
+        read -rp "OK, Please insert your comment: " TraderComment
+        echo -e "OK thank you\nPlease Confirm the analysis"
+        echo -e "-------------------------------------------\n"
+        echo -e "Coin Name: $AnsCoin"
+        echo -e "Entry Price: $EntryPrice"
+        echo -e "SL 1: $SL1"
+        echo -e "SL 2: $SL2"
+        echo -e "TP 1: $TP1"
+        echo -e "TP 2: $TP2"
+        echo -e "TradingView Link: $AnalysisTradingViewLink"
+        echo -e "Probability of Occurrence: $ProbabilityOfOccurrence"
+        echo -e "Trader Comment: $TraderComment"
+        echo -e "\n-------------------------------------------\n"
+        ConfirmOrEditAnalysis
+        
+    elif [ "$AddCommentAns" == "n" ] || [ "$AddCommentAns" == "N" ] ||  [ "$AddCommentAns" == "no" ] ||  [ "$AddCommentAns" == "NO" ]
+     then 
+        echo -e "OK thank you\nPlease Confirm the analysis"
+        echo -e "-------------------------------------------\n"
+        echo -e "Coin Name: $AnsCoin"
+        echo -e "Entry Price: $EntryPrice"
+        echo -e "SL 1: $SL1"
+        echo -e "SL 2: $SL2"
+        echo -e "TP 1: $TP1"
+        echo -e "TP 2: $TP2"
+        echo -e "TradingView Link: $AnalysisTradingViewLink"
+        echo -e "Probability of Occurrence: $ProbabilityOfOccurrence"
+        echo -e "\n-------------------------------------------\n"
+        ConfirmOrEditAnalysis
+
+    else
+        echo -e "Invalid Choice"
+    fi
+    
 }
 
 
@@ -59,6 +126,7 @@ SwitchToAnalyzer()
     fi
     
 }
+
 
 
 AnalayzesView()
@@ -117,6 +185,7 @@ AnalayzesView()
         esac
     done
 }
+
 
 
 MarketInfoFull()
@@ -247,7 +316,7 @@ echo -e "Hello User\n"
         AnalayzesView
     ;;
     3)
-        #SwitchToAnalyzer
+        SwitchToAnalyzer
     ;;
     *)
         echo -e "Choice is Invalid\n"
@@ -255,6 +324,7 @@ echo -e "Hello User\n"
         esac
     done
 }
+
 
 
 TraderPanel()
@@ -268,7 +338,7 @@ TraderPanel()
                 MarketInfoFull
             ;;
             2)
-                #AddStrategy
+                PublishAnalyze
             ;;
             3)
                 AnalayzesView
@@ -280,15 +350,9 @@ TraderPanel()
         done
 }
 
-# ---------------------- MAIN ----------------------
-
-echo -e "Welcome to the RAD Telegram bot\n"
-read -rp "Please Enter your Telegram ID: " a
-
-
-if [ "$a" == "Admin" ]
-then
-    echo -e "Please Select Your Choice \n"
+AdminPanel() 
+{
+        echo -e "Please Select Your Choice \n"
     select CHOICE in "Admin Pannel" "Trade Panel" "User" ;
     do
         case $REPLY in 
@@ -307,8 +371,10 @@ then
 
         esac
     done
-elif [ "$a" != "Admin" ]
-then
+}
+
+TraderPanelMain()
+{
     echo -e "Please Select Your Choice \n"
     select CHOICE in "Trade Panel" "User" ;
     do
@@ -325,4 +391,20 @@ then
         ;;
         esac
     done
+}
+
+
+# ---------------------- MAIN ----------------------
+
+
+echo -e "Welcome to the RAD Telegram bot\n"
+read -rp "Please Enter your Telegram ID: " a
+
+
+if [ "$a" == "Admin" ]
+then
+    AdminPanel
+elif [ "$a" != "Admin" ]
+then
+    TraderPanelMain
 fi
